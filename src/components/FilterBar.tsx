@@ -10,7 +10,7 @@ interface FilterBarProps {
 }
 
 const popularLanguages = [
-  { value: '', label: 'All Languages' },
+  { value: 'all', label: 'All Languages' },
   { value: 'javascript', label: 'JavaScript' },
   { value: 'typescript', label: 'TypeScript' },
   { value: 'python', label: 'Python' },

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { GitStatsHeader } from '@/components/GitStatsHeader';
@@ -24,7 +23,7 @@ interface GitHubProject {
   };
 }
 
-const fetchTrendingProjects = async (language = '', period = 'daily'): Promise<GitHubProject[]> => {
+const fetchTrendingProjects = async (language = 'all', period = 'daily'): Promise<GitHubProject[]> => {
   const today = new Date();
   const pastDate = new Date();
   
@@ -37,7 +36,7 @@ const fetchTrendingProjects = async (language = '', period = 'daily'): Promise<G
   }
 
   const dateString = pastDate.toISOString().split('T')[0];
-  const languageQuery = language ? `+language:${language}` : '';
+  const languageQuery = language !== 'all' ? `+language:${language}` : '';
   const query = `created:>${dateString}${languageQuery}`;
   
   const response = await fetch(
@@ -53,7 +52,7 @@ const fetchTrendingProjects = async (language = '', period = 'daily'): Promise<G
 };
 
 const Index = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState('all');
   const [timePeriod, setTimePeriod] = useState('daily');
   const { toast } = useToast();
 
