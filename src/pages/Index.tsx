@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { GitStatsHeader } from '@/components/GitStatsHeader';
@@ -37,14 +38,21 @@ const fetchTrendingProjects = async (language = 'all', period = 'daily'): Promis
   }
 
   const dateString = pastDate.toISOString().split('T')[0];
-  const languageQuery = language !== 'all' ? `+language:${language}` : '';
+  const languageQuery = language !== 'all' ? ` language:${language}` : '';
   const query = `created:>${dateString}${languageQuery}`;
   
   console.log('GitHub API Query:', query); // Debug log to see what we're searching for
   
-  const response = await fetch(
-    `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=30`
-  );
+  // Build URL manually to avoid over-encoding
+  const baseUrl = 'https://api.github.com/search/repositories';
+  const searchParams = new URLSearchParams({
+    q: query,
+    sort: 'stars',
+    order: 'desc',
+    per_page: '30'
+  });
+  
+  const response = await fetch(`${baseUrl}?${searchParams.toString()}`);
   
   if (!response.ok) {
     throw new Error('Failed to fetch trending projects');
