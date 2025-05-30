@@ -27,17 +27,20 @@ const fetchTrendingProjects = async (language = 'all', period = 'daily'): Promis
   const today = new Date();
   const pastDate = new Date();
   
+  // Expand date range to get more results
   if (period === 'daily') {
-    pastDate.setDate(today.getDate() - 1);
+    pastDate.setDate(today.getDate() - 7); // Changed from 1 day to 7 days
   } else if (period === 'weekly') {
-    pastDate.setDate(today.getDate() - 7);
+    pastDate.setDate(today.getDate() - 30); // Changed from 7 days to 30 days
   } else {
-    pastDate.setMonth(today.getMonth() - 1);
+    pastDate.setMonth(today.getMonth() - 3); // Changed from 1 month to 3 months
   }
 
   const dateString = pastDate.toISOString().split('T')[0];
   const languageQuery = language !== 'all' ? `+language:${language}` : '';
   const query = `created:>${dateString}${languageQuery}`;
+  
+  console.log('GitHub API Query:', query); // Debug log to see what we're searching for
   
   const response = await fetch(
     `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=30`
@@ -48,6 +51,7 @@ const fetchTrendingProjects = async (language = 'all', period = 'daily'): Promis
   }
   
   const data = await response.json();
+  console.log('GitHub API Response:', data); // Debug log to see the response
   return data.items || [];
 };
 
